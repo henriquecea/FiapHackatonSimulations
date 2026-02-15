@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="FiapHackatonSimulations.Application/FiapHackatonSimulations.Application.csproj" />
+  <Project Path="FiapHackatonSimulations.Domain/FiapHackatonSimulations.Domain.csproj" />
+  <Project Path="FiapHackatonSimulations.Infrastructure/FiapHackatonSimulations.Infrastructure.csproj" />
+  <Project Path="FiapHackatonSimulations.Tests/FiapHackatonSimulations.Tests.csproj" />
+  <Project Path="FiapHackatonSimulations/FiapHackatonSimulations.WebAPI.csproj" />
+</Solution>
