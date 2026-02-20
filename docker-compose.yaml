@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  sql-fiap-hackaton-simulation:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-fiap-hackaton-simulation
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "NovaSenhaForte123!"
+      MSSQL_PID: "Developer"
+    ports:
+      - "14332:1433"
+    volumes:
+      - sql_fiap_hackaton_simulation_data:/var/opt/mssql
+
+  sql-tools-fiap-hackaton-simulation:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: sql-tools-fiap-hackaton-simulation
+    depends_on:
+      - sql-fiap-hackaton-simulation
+    entrypoint: /bin/bash
+    command: >
+      -c "
+      echo 'Aguardando SQL Server...';
+      until /opt/mssql-tools/bin/sqlcmd -S sql-fiap-hackaton-simulation -U sa -P 'NovaSenhaForte123!' -Q 'SELECT 1' &> /dev/null; do
+        sleep 2;
+      done;
+      echo 'SQL Server pronto. Criando banco se não existir...';
+      /opt/mssql-tools/bin/sqlcmd -S sql-fiap-hackaton-simulation -U sa -P 'NovaSenhaForte123!' -Q \"IF DB_ID('fiap-hackaton-simulation') IS NULL CREATE DATABASE [fiap-hackaton-simulation]\"
+      "
+
+volumes:
+  sql_fiap_hackaton_simulation_data:
