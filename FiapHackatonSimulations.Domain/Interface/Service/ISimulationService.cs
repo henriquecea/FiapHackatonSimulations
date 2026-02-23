@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FiapHackatonSimulations.Domain.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FiapHackatonSimulations.Domain.Interface.Service;
 
@@ -18,4 +19,11 @@ public interface ISimulationService
     /// <param name="id"></param>
     /// <returns></returns>
     Task<IActionResult> GetPlotsById(Guid id);
+
+    /// <summary>
+    /// Realiza a inserção dos dados no banco.
+    /// </summary>
+    /// <param name="req"></param>
+    /// <returns></returns>
+    Task<IActionResult> PostSimulationsData(SimulationDto req);
 }

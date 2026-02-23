@@ -29,5 +29,20 @@ services:
       /opt/mssql-tools/bin/sqlcmd -S sql-fiap-hackaton-simulation -U sa -P 'NovaSenhaForte123!' -Q \"IF DB_ID('fiap-hackaton-simulation') IS NULL CREATE DATABASE [fiap-hackaton-simulation]\"
       "
 
+  rabbitmq-fiap-hackaton:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-fiap-hackaton
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    ports:
+      - "5672:5672"     # conexão aplicação
+      - "15672:15672"   # painel web
+    volumes:
+      - rabbitmq_fiap_hackaton_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
 volumes:
   sql_fiap_hackaton_simulation_data:
+  rabbitmq_fiap_hackaton_data:
