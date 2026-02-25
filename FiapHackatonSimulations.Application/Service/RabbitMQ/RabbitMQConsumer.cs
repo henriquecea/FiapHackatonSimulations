@@ -16,16 +16,33 @@ public class RabbitMQConsumer(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _connection = await factory.CreateConnectionAsync(stoppingToken);
-        _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                _connection = await factory.CreateConnectionAsync(stoppingToken);
+                _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
+
+                break; // conexão estabelecida, sai do loop
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"RabbitMQ ainda não disponível. Tentando novamente em 5s...");
+                await Task.Delay(5000, stoppingToken);
+            }
+        }
 
         var scope = scopeFactory.CreateScope();
-        var handlers = scope.ServiceProvider
-                            .GetServices<IRabbitMQMessageHandler>();
+        var handlers = scope.ServiceProvider.GetServices<IRabbitMQMessageHandler>();
 
         foreach (var handler in handlers)
         {
-            await _channel.QueueDeclareAsync(queue: handler.QueueName, durable: true, exclusive: false, autoDelete: false, cancellationToken: stoppingToken);
+            await _channel.QueueDeclareAsync(
+                queue: handler.QueueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                cancellationToken: stoppingToken);
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
 
@@ -50,7 +67,11 @@ public class RabbitMQConsumer(
                 }
             };
 
-            await _channel.BasicConsumeAsync(queue: handler.QueueName, autoAck: false, consumer: consumer, cancellationToken: stoppingToken);
+            await _channel.BasicConsumeAsync(
+                queue: handler.QueueName,
+                autoAck: false,
+                consumer: consumer,
+                cancellationToken: stoppingToken);
         }
     }
 }
