@@ -13,9 +13,9 @@ public class SimulationController(ISimulationService simulationService,
     public async Task<IActionResult> GetPlotsPaginated([FromQuery] short page = 0, [FromQuery] short pageSize = 10) =>
         await simulationService.GetPlotsPaginated(page, pageSize);
 
-    [HttpGet("{simulationId:guid}")]
-    public async Task<IActionResult> GetPlotsByID(Guid simulationId) =>
-        await simulationService.GetPlotsById(simulationId);
+    [HttpGet("{plotId:guid}")]
+    public async Task<IActionResult> GetPlotsByID(Guid plotId) =>
+        await simulationService.GetPlotsById(plotId);
 
     [HttpPost]
     public async Task<IActionResult> PostSimulationsData([FromBody] SimulationDto req)
