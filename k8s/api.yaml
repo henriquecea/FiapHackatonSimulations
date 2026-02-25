@@ -15,7 +15,7 @@ spec:
       containers:
         - name: fiap-api
           image: fiap-api:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
