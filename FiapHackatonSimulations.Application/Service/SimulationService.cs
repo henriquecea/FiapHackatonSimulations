@@ -41,20 +41,33 @@ public class SimulationService(ISimulationRepository simulationRepository,
     {
         try
         {
-            var entity = new SensorData
-            {
-                Plot = req.Plot,
-                PrecipitationLevel = req.PrecipitationLevel,
-                SoilMoisture = req.SoilMoisture,
-                Temperature = req.Temperature
-            };
+            var random = new Random();
+            var simulations = new List<SensorData>();
+            var simulationId = Guid.NewGuid();
 
-            await simulationRepository.AddAsync(entity);
+            for (int i = 0; i < 10; i++)
+            {
+                var entity = new SensorData
+                {
+                    Plot = simulationId,
+
+                    PrecipitationLevel = Math.Round(
+                   (decimal)random.NextDouble() * 100m, 2), // 0 - 100 mm
+
+                    SoilMoisture = Math.Round(
+                   (decimal)random.NextDouble() * 60m, 2), // 0 - 60 %
+
+                    Temperature = Math.Round(
+                   (decimal)random.NextDouble() * 40m, 2) // 0 - 40 °C
+                };
+
+                await simulationRepository.AddAsync(entity);
+            }
+
             await simulationRepository.SaveChangesAsync();
 
             logger.LogInformation(
-                "SensorData {SensorDataId} criada com sucesso",
-                entity.Id);
+                "SensorData {SensorDataId} criada com sucesso", simulationId);
 
             return new AcceptedResult();
         }
