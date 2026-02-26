@@ -4,10 +4,13 @@ using FiapHackatonSimulations.Domain.Interface.RabbitMQ;
 using FiapHackatonSimulations.Domain.Interface.Service;
 using FiapHackatonSimulations.Domain.Settings;
 using FiapHackatonSimulations.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using System.Text;
 
 namespace FiapHackatonSimulations.WebAPI.Extension;
 
@@ -74,4 +77,28 @@ public static class BuilderConfiguration
             });
         });
     }
-}
+
+    public static void AddAuthWithJWT(this WebApplicationBuilder builder)
+    {
+        var secretKey = builder.Configuration["JWT:SecretKey"]
+                      ?? throw new InvalidOperationException("JWT Secret Key is not configured.");
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                };
+            });
+    }

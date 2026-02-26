@@ -1,9 +1,11 @@
 ﻿using FiapHackatonSimulations.Domain.DTO;
 using FiapHackatonSimulations.Domain.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiapHackatonSimulations.WebAPI.Controller;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SimulationController(ISimulationService simulationService,
