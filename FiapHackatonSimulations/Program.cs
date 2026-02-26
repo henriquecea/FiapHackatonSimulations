@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddSwagger();
 builder.AddDbContext();
 builder.AddRabbitMQ();
+builder.AddAuthWithJWT();
 
 // Serviços padrão ASP.NET
 builder.Services.AddAuthorization();
