@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FiapHackatonSimulations.WebAPI.Controller;
 
-[Authorize]
-[ApiController]
 [Route("api/[controller]")]
+[ApiController]
+[Authorize]
 public class SimulationController(ISimulationService simulationService,
                                   IRabbitMQService rabbitMQService) : ControllerBase
 {

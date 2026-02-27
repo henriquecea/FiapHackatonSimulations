@@ -56,11 +56,14 @@ public static class BuilderConfiguration
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fiap Hackaton - Simulation", Version = "v1" });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                In = ParameterLocation.Header,
-                Description = "Please enter a valid token",
                 Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",            
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Digite: Bearer {seu token JWT}"
             });
+
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -83,6 +86,12 @@ public static class BuilderConfiguration
         var secretKey = builder.Configuration["JWT:SecretKey"]
                       ?? throw new InvalidOperationException("JWT Secret Key is not configured.");
 
+        var validIssuer = builder.Configuration["JWT:ValidIssuer"]
+                  ?? throw new InvalidOperationException("JWT ValidIssuer Key is not configured.");
+
+        var validAudience = builder.Configuration["JWT:ValidAudience"]
+                  ?? throw new InvalidOperationException("JWT ValidAudience Key is not configured.");
+
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -96,8 +105,8 @@ public static class BuilderConfiguration
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidIssuer = validIssuer,
+                    ValidAudience = validAudience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
             });
