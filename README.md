@@ -27,7 +27,7 @@ A arquitetura é organizada em camadas bem definidas, garantindo que regras de n
 - 🌐 **RESTful APIs**
 - 🧼 **Clean Architecture**
 - 📑 **Swagger** (documentação da API)
-
+- ☸️ Kubernetes (K8s) com Minikube para simulação de ambiente de produção e gerenciamento de containers em cluster local.
 ---
 
 ## 🎯 Objetivos do Projeto
