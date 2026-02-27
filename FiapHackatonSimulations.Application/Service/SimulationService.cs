@@ -45,7 +45,7 @@ public class SimulationService(ISimulationRepository simulationRepository,
             var simulations = new List<SensorData>();
             var simulationId = Guid.NewGuid();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 25; i++)
             {
                 var entity = new SensorData
                 {
